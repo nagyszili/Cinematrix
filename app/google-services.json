@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "144660760107",
+    "firebase_url": "https://cinematrix-d4580.firebaseio.com",
+    "project_id": "cinematrix-d4580",
+    "storage_bucket": "cinematrix-d4580.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144660760107:android:3555bbf476679d095a0c6e",
+        "android_client_info": {
+          "package_name": "com.example.cinematrix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144660760107-614avjpfla5tm5483srgk0r88asl7co2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cinematrix",
+            "certificate_hash": "6b1d59bf8702bf409d64f58454c870baecdbe1ab"
+          }
+        },
+        {
+          "client_id": "144660760107-ogsj68jgon1to51f2nbohv7tiqn4dnu4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAR39PkH1Tte5EBhFj8i2nC3sc7sR9Sxc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144660760107-ogsj68jgon1to51f2nbohv7tiqn4dnu4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
