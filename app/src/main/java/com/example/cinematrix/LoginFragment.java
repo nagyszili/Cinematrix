@@ -110,7 +110,7 @@ public class LoginFragment extends Fragment {
     private void startHomeFragment() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        HomeFragment homeFragment = new HomeFragment(context);
+        HomeFragment homeFragment = new HomeFragment(getContext());
         transaction.replace(R.id.container, homeFragment);
 //        transaction.addToBackStack(null);
         transaction.commit();
@@ -120,11 +120,12 @@ public class LoginFragment extends Fragment {
     private void startRegister() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        RegisterFragment registerFragment = new RegisterFragment(context,this.bottomNavigationView);
+        RegisterFragment registerFragment = new RegisterFragment(getContext(),this.bottomNavigationView);
         transaction.replace(R.id.container, registerFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
 
     /**
      * Generate a password hash by using (email as) salt.

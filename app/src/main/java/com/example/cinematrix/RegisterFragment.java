@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -88,7 +91,14 @@ public class RegisterFragment extends Fragment {
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             final DatabaseReference dbUsers = database.getReference("users");
 
-            dbUsers.child(hashEmail).setValue(user);
+            dbUsers.child(hashEmail).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Toast.makeText(getContext(), "Registration Successful!", Toast.LENGTH_SHORT).show();
+                    startLogin();
+
+                }
+            });
 
 
         }
@@ -98,11 +108,12 @@ public class RegisterFragment extends Fragment {
     private void startLogin() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        LoginFragment loginFragment = new LoginFragment(context);
+        LoginFragment loginFragment = new LoginFragment(getContext());
         transaction.replace(R.id.container, loginFragment);
 //        transaction.addToBackStack(null);
         transaction.commit();
     }
+
 
     /**
      * Generate a password hash by using (email as) salt.
