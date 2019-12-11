@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "144660760107-cif88rba3rpgc14pmncjus2g0obcauln.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cinematrix",
+            "certificate_hash": "1b01ef725b1bcef649f80b52f0a1dae92731aa87"
+          }
+        },
+        {
           "client_id": "144660760107-614avjpfla5tm5483srgk0r88asl7co2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
