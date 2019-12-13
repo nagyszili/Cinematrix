@@ -2,10 +2,11 @@
 package com.example.cinematrix;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result {
+public class MovieResult {
 
     @SerializedName("popularity")
     @Expose
@@ -75,7 +76,7 @@ public class Result {
     }
 
     public String getPosterPath() {
-        return posterPath;
+        return "http://image.tmdb.org/t/p/w500" + posterPath;
     }
 
     public void setPosterPath(String posterPath) {

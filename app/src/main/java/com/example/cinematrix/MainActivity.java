@@ -1,15 +1,18 @@
 package com.example.cinematrix;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 
+import com.example.cinematrix.fragments.FavoritesFragment;
+import com.example.cinematrix.fragments.HomeFragment;
+import com.example.cinematrix.fragments.LoginFragment;
+import com.example.cinematrix.fragments.NowInCinemaFragment;
+import com.example.cinematrix.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
