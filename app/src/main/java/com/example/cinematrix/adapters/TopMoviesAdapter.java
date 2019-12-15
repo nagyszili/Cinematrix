@@ -1,4 +1,4 @@
-package com.example.cinematrix;
+package com.example.cinematrix.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,14 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.cinematrix.R;
+import com.example.cinematrix.api.MovieResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopMovieViewHolder> {
 
     private Context context;
     private List<MovieResult> movies;
+    private OnBottomReachedListener onBottomReachedListener;
 
 //    public TopMoviesAdapter(Context context) {
 //        this.context = context;
@@ -45,13 +47,21 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
     @Override
     public void onBindViewHolder(@NonNull TopMovieViewHolder holder, int position) {
 
+        if (position == movies.size() - 1){
+
+            onBottomReachedListener.onBottomReached(position);
+
+        }
+
         MovieResult movie = movies.get(position);
 
         Glide.with(holder.imageView)
                 .load(movie.getPosterPath())
                 .into(holder.imageView);
 
-        holder.textView.setText(movie.getTitle());
+        holder.movieTitle.setText(movie.getTitle());
+
+        holder.movieDescription.setText(movie.getOverview());
 
     }
 
@@ -60,15 +70,21 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
         return movies.size();
     }
 
+    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
+
+        this.onBottomReachedListener = onBottomReachedListener;
+    }
+
     class TopMovieViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
-        TextView textView;
+        TextView movieTitle,movieDescription;
 
         public TopMovieViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.topMovieImage);
-            textView = itemView.findViewById(R.id.topMovieTitle);
+            movieTitle = itemView.findViewById(R.id.topMovieTitle);
+            movieDescription = itemView.findViewById(R.id.topMovieDescription);
 
         }
     }

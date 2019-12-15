@@ -1,5 +1,5 @@
 
-package com.example.cinematrix;
+package com.example.cinematrix.api;
 
 import java.util.List;
 

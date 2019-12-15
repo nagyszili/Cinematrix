@@ -1,5 +1,5 @@
 
-package com.example.cinematrix;
+package com.example.cinematrix.api;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class MoviesResponse {
+public class MovieResponse {
 
     @SerializedName("page")
     @Expose
