@@ -14,24 +14,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.cinematrix.Movie;
 import com.example.cinematrix.MovieResult;
 import com.example.cinematrix.MoviesResponse;
 import com.example.cinematrix.R;
 import com.example.cinematrix.TopMoviesAdapter;
-import com.example.cinematrix.api.Client;
 import com.example.cinematrix.api.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
 
-    public static String BASE_URL = "https://api.themoviedb.org";
+    public static final String BASE_URL = "https://api.themoviedb.org/3/";
     public static int PAGE = 1;
     public static String API_KEY = "99fd430c3be6ec05d080de47353ce38e";
     public static String LANGUAGE = "en-US";
@@ -39,9 +41,9 @@ public class HomeFragment extends Fragment {
 
     private Context context;
     private TopMoviesAdapter adapter;
-    private List<MovieResult> movies;
+    private List<MovieResult> movies = new ArrayList<>();
     private RecyclerView recyclerView;
-    private Service movieService;
+    private LinearLayoutManager layoutManager;
 
     public HomeFragment(Context context) {
         this.context = context;
@@ -52,18 +54,20 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
         recyclerView = view.findViewById(R.id.homeFragmentRecyclerView);
-        movies = new ArrayList<>();
+        layoutManager = new LinearLayoutManager(context);
 
-        movieService = Client.getClient().create(Service.class);
 
-        loadMovies();
+        if(movies.isEmpty())
+        {
+            initMovieList();
+        } else {
+//            loadMoreData(++PAGE);
+        }
 
-//        adapter = new TopMoviesAdapter(getContext(), movies);
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-//        recyclerView.setLayoutManager(layoutManager);
-//
-//
+
+
 //        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //
 //            /**
@@ -79,9 +83,8 @@ public class HomeFragment extends Fragment {
 //                int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
 //                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
 //                    if (PAGE <= 5) {
-//                        loadMoreData(PAGE);
+//                        loadMoreData(++PAGE);
 //                        recyclerView.getAdapter().notifyDataSetChanged();
-//                        ++PAGE;
 //                    } else {
 //                        return;
 //                    }
@@ -92,26 +95,29 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void loadMovies() {
+    private void initMovieList() {
 
-//        Client client = new Client();
-        Service apiService = Client.getClient().create(Service.class);
 
-        Call<MoviesResponse> call = apiService.getPopularMovies(API_KEY, PAGE);
-        ++PAGE;
+        Call<MoviesResponse> call = apiInterface().getPopularMovies(API_KEY, PAGE);
+
 
         call.enqueue(new Callback<MoviesResponse>() {
             @Override
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                MoviesResponse result = response.body();
-                List<MovieResult> movieList = result.getMovieResults();
-                Log.d("HomeFragmentResponse", response.toString());
-//                Toast.makeText(getContext(), movieList.get(0).getTitle(), Toast.LENGTH_SHORT).show();
+                MoviesResponse responseBody = response.body();
+                try {
+                    List<MovieResult> movieList = responseBody.getMovieResults();
+//                    Toast.makeText(getContext(), movieList.get(0).getTitle(), Toast.LENGTH_SHORT).show();
 
+                    movies.addAll(movieList);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    recyclerView.setAdapter(new TopMoviesAdapter(context, movieList));
+                    recyclerView.getAdapter().notifyDataSetChanged();
 
-//                movies.addAll(movieList);
-//                recyclerView.setAdapter(new TopMoviesAdapter(getContext(),movieList));
-//                recyclerView.getAdapter().notifyDataSetChanged();
+                } catch (Exception e) {
+//                    Toast.makeText(getContext(), "Something went wrong:" + e.toString(), Toast.LENGTH_LONG).show();
+
+                }
             }
 
             @Override
@@ -122,15 +128,12 @@ public class HomeFragment extends Fragment {
         });
 
 
+
     }
 
-    public void loadMoreData(int pageNumber) {
+    private void loadMoreData(int pageNumber) {
 
-//        Client client = new Client();
-        Service apiService = Client.getClient().create(Service.class);
-
-        Call<MoviesResponse> call = apiService.getPopularMovies(API_KEY, pageNumber);
-
+        Call<MoviesResponse> call = apiInterface().getPopularMovies(API_KEY, pageNumber);
 
         call.enqueue(new Callback<MoviesResponse>() {
             @Override
@@ -148,5 +151,21 @@ public class HomeFragment extends Fragment {
             }
         });
 
+    }
+
+    private Service apiInterface() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        Service apiService = retrofit.create(Service.class);
+
+        return apiService;
     }
 }

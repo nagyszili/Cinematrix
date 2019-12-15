@@ -2,8 +2,10 @@
 package com.example.cinematrix;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 
 public class MoviesResponse {
 
@@ -16,9 +18,9 @@ public class MoviesResponse {
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;
-    @SerializedName("movieResults")
+    @SerializedName("results")
     @Expose
-    private List<MovieResult> movieResults = null;
+    private List<MovieResult> movieResults;
 
     public Integer getPage() {
         return page;

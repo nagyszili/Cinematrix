@@ -20,11 +20,11 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
     private Context context;
     private List<MovieResult> movies;
 
-    public TopMoviesAdapter(Context context) {
-        this.context = context;
-        this.movies = new ArrayList<>();
-
-    }
+//    public TopMoviesAdapter(Context context) {
+//        this.context = context;
+//        this.movies = new ArrayList<>();
+//
+//    }
 
     public TopMoviesAdapter(Context context, List<MovieResult> movies) {
         this.context = context;
@@ -34,11 +34,12 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
     @NonNull
     @Override
     public TopMovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.top_movie_list_item, null);
-        TopMovieViewHolder holder = new TopMovieViewHolder(view);
+        View view = LayoutInflater.from(context).inflate(R.layout.top_movie_list_item, parent, false);
+        TopMovieViewHolder viewHolder = new TopMovieViewHolder(view);
 
-        return holder;
+
+
+        return viewHolder;
     }
 
     @Override
