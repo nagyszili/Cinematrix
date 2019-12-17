@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment {
 
                     movies.addAll(movieList);
                     recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                    adapter = new TopMoviesAdapter(context, movies);
+                    adapter = new TopMoviesAdapter(context, movies,getFragmentManager());
                     adapter.setOnBottomReachedListener(position -> loadMoreData(++PAGE));
                     recyclerView.setAdapter(adapter);
                     recyclerView.getAdapter().notifyDataSetChanged();
