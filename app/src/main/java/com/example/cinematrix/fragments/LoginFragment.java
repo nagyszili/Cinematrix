@@ -1,7 +1,9 @@
 package com.example.cinematrix.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +38,8 @@ public class LoginFragment extends Fragment {
     private TextView toRegister;
     private Context context;
     private BottomNavigationView bottomNavigationView;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
 
     public LoginFragment() {
     }
@@ -64,6 +68,10 @@ public class LoginFragment extends Fragment {
 
         toRegister.setOnClickListener(v -> startRegister());
 
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mEditor = mPreferences.edit();
+
+
 
         return view;
     }
@@ -89,6 +97,8 @@ public class LoginFragment extends Fragment {
                         if (user.getPassword().equals(hashPassword)) {
                             Toast.makeText(getContext(), "Login Success!", Toast.LENGTH_SHORT).show();
                             bottomNavigationView.setVisibility(View.VISIBLE);
+                            mEditor.putString("userKey", hashEmail);
+                            mEditor.commit();
                             startHomeFragment();
 
                         } else {

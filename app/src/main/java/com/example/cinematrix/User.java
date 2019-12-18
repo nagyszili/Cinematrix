@@ -1,14 +1,27 @@
 package com.example.cinematrix;
 
+import com.example.cinematrix.api.MovieResult;
+
+import java.util.HashMap;
+
 public class User {
 
     private String fullName;
     private String email;
     private String password;
     private String phoneNumber;
+    private HashMap<String, MovieResult> favoriteMovies;
 
 
     public User() {
+    }
+
+    public HashMap<String, MovieResult> getFavoriteMovies() {
+        return favoriteMovies;
+    }
+
+    public void setFavoriteMovies(HashMap<String, MovieResult> favoriteMovies) {
+        this.favoriteMovies = favoriteMovies;
     }
 
     public String getFullName() {
