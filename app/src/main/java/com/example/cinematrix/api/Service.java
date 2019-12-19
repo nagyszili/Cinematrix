@@ -16,4 +16,10 @@ public interface Service {
     @GET("movie/{movie_id}/videos")
     Call<VideoResponse> getVideo(@Path("movie_id") int id, @Query("api_key") String api_key);
 
+    @GET("movie/now_playing")
+    Call<MovieResponse> getNowPlaying(@Query("api_key") String api_key, @Query("page") int pageIndex);
+
+    @GET("search/movie")
+    Call<MovieResponse> getSearch(@Query("api_key") String api_key,@Query("query") String query,@Query("page") int pageIndex);
+
 }

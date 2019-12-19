@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +45,8 @@ public class HomeFragment extends Fragment {
     private List<MovieResult> movies = new ArrayList<>();
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
+    private SearchView searchView;
+    private String queryString = "";
 
     public HomeFragment(Context context) {
         this.context = context;
@@ -54,16 +57,35 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
+        searchView = view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.homeFragmentRecyclerView);
         layoutManager = new LinearLayoutManager(context);
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                queryString = query;
+                return false;
+            }
 
-        if(movies.isEmpty())
-        {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                queryString = newText;
+
+                if (newText.isEmpty()) {
+                    initMovieList();
+                } else {
+                    search(newText);
+                }
+
+                return false;
+            }
+        });
+
+
+        if (movies.isEmpty() && queryString.isEmpty()) {
             initMovieList();
         }
-
 
 
         return view;
@@ -82,10 +104,10 @@ public class HomeFragment extends Fragment {
                 try {
                     List<MovieResult> movieList = responseBody.getMovieResults();
 //                    Toast.makeText(getContext(), movieList.get(0).getTitle(), Toast.LENGTH_SHORT).show();
-
+                    movies = new ArrayList<>();
                     movies.addAll(movieList);
                     recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                    adapter = new TopMoviesAdapter(context, movies,getFragmentManager());
+                    adapter = new TopMoviesAdapter(context, movies, getFragmentManager());
                     adapter.setOnBottomReachedListener(position -> loadMoreData(++PAGE));
                     recyclerView.setAdapter(adapter);
                     recyclerView.getAdapter().notifyDataSetChanged();
@@ -103,9 +125,34 @@ public class HomeFragment extends Fragment {
             }
         });
 
+    }
+
+    private void search(String searchString) {
+
+        Call<MovieResponse> call = apiInterface().getSearch(API_KEY, searchString, 1);
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                if (response.body().getTotalResults() > 0) {
+                    List<MovieResult> movieList = response.body().getMovieResults();
+                    movies = new ArrayList<>();
+                    movies.addAll(movieList);
+
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
 
 
     }
+
 
     private void loadMoreData(int pageNumber) {
 

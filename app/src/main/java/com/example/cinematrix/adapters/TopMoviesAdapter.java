@@ -60,7 +60,7 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
         MovieResult movie = movies.get(position);
 
         Glide.with(holder.imageView)
-                .load(movie.getPosterPath())
+                .load(movie.getImage())
                 .into(holder.imageView);
 
         holder.movieTitle.setText(movie.getTitle());

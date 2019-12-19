@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
                 case R.id.navigation_now_in_cinema: {
-                    selectedFragment = new NowInCinemaFragment();
+                    selectedFragment = new NowInCinemaFragment(this);
                     bottomNavBar.getMenu().getItem(2).setChecked(true);
 
                     break;

@@ -39,7 +39,7 @@ public class FavoriteMovieAdapter extends RecyclerView.Adapter<FavoriteMovieAdap
         ViewHolder viewHolder = new ViewHolder(view);
 
 
-        return null;
+        return viewHolder;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class FavoriteMovieAdapter extends RecyclerView.Adapter<FavoriteMovieAdap
         MovieResult movie = myMovies.get(position);
 
         Glide.with(holder.image)
-                .load(movie.getPosterPath())
+                .load(movie.getImage())
                 .into(holder.image);
 
         holder.title.setText(movie.getTitle());

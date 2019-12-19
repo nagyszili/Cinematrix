@@ -77,7 +77,7 @@ public class MovieResult {
     }
 
     public String getPosterPath() {
-        return "http://image.tmdb.org/t/p/w500" + posterPath;
+        return posterPath;
     }
 
     public void setPosterPath(String posterPath) {
@@ -162,6 +162,10 @@ public class MovieResult {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public String getImage() {
+        return "http://image.tmdb.org/t/p/w500" + posterPath;
     }
 
 }
