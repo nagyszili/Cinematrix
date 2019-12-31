@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,9 +20,14 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinematrix.R;
+import com.example.cinematrix.adapters.ImageAdapter;
+import com.example.cinematrix.adapters.SimilarMoviesAdapter;
 import com.example.cinematrix.adapters.TopMoviesAdapter;
+import com.example.cinematrix.api.Backdrop;
+import com.example.cinematrix.api.ImageResponse;
 import com.example.cinematrix.api.MovieResponse;
 import com.example.cinematrix.api.MovieResult;
 import com.example.cinematrix.api.Service;
@@ -37,6 +43,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -52,6 +59,7 @@ public class DetailDialogFragment extends DialogFragment {
     public static final String BASE_URL = "https://api.themoviedb.org/3/";
     public int PAGE = 1;
     public static String API_KEY = "99fd430c3be6ec05d080de47353ce38e";
+    public static String LANGUAGE = "en";
 
     private MovieResult movie;
     private Context context;
@@ -65,6 +73,14 @@ public class DetailDialogFragment extends DialogFragment {
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
     private Boolean isFavorite = false;
+
+    private List<MovieResult> similarMovies = new ArrayList<>();
+    private RecyclerView similarRV;
+    private RecyclerView imageRV;
+    private List<Backdrop> images = new ArrayList<>();
+    private SimilarMoviesAdapter similarMoviesAdapter;
+    private ImageAdapter imageAdapter;
+
 
 
     //    private VideoResponse videoResponse;
@@ -104,6 +120,8 @@ public class DetailDialogFragment extends DialogFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.detail_fragment_layout, container, false);
         YouTubePlayerView youtubePlayerView = view.findViewById(R.id.youtubePlayerView);
+        imageRV = view.findViewById(R.id.imageRecyclerView);
+        similarRV = view.findViewById(R.id.detailRelatedRecyclerView);
         title = view.findViewById(R.id.detailTitle);
         description = view.findViewById(R.id.detailDescription);
         close = view.findViewById(R.id.dialogX);
@@ -148,6 +166,8 @@ public class DetailDialogFragment extends DialogFragment {
             }
         });
 
+        getSimilarMovies();
+        getImageList();
 
         youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
@@ -217,6 +237,74 @@ public class DetailDialogFragment extends DialogFragment {
             }
         });
 
+    }
+
+    private void getImageList() {
+
+        Call<ImageResponse> call = apiInterface().getImages(movie.getId(),API_KEY,"en");
+
+        call.enqueue(new Callback<ImageResponse>() {
+            @Override
+            public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
+                ImageResponse imageResponse = response.body();
+
+                try {
+                    List<Backdrop> backdrops = imageResponse.getBackdrops();
+                    images = new ArrayList<>();
+                    images.addAll(backdrops);
+                    imageAdapter = new ImageAdapter(context,images);
+                    imageRV.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                    imageRV.setAdapter(imageAdapter);
+                    imageRV.getAdapter().notifyDataSetChanged();
+
+
+                } catch (Exception e) {
+//                    Toast.makeText(getContext(), "Something went wrong:" + e.toString(), Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageResponse> call, Throwable t) {
+
+            }
+        });
+
+
+
+    }
+
+    private void getSimilarMovies() {
+
+        Call<MovieResponse> call = apiInterface().getSimilarMovies(movie.getId(),API_KEY, PAGE);
+
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                MovieResponse responseBody = response.body();
+                try {
+                    List<MovieResult> movieList = responseBody.getMovieResults();
+//                    Toast.makeText(getContext(), movieList.get(0).getTitle(), Toast.LENGTH_SHORT).show();
+                    similarMovies = new ArrayList<>();
+                    similarMovies.addAll(movieList);
+                    similarRV.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                    similarMoviesAdapter = new SimilarMoviesAdapter(context, similarMovies,getFragmentManager(),DetailDialogFragment.this);
+                    similarRV.setAdapter(similarMoviesAdapter);
+                    similarRV.getAdapter().notifyDataSetChanged();
+
+                } catch (Exception e) {
+//                    Toast.makeText(getContext(), "Something went wrong:" + e.toString(), Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.d("DetailDialogFragment", "Failed api call!");
+
+            }
+        });
     }
 
 

@@ -22,4 +22,10 @@ public interface Service {
     @GET("search/movie")
     Call<MovieResponse> getSearch(@Query("api_key") String api_key,@Query("query") String query,@Query("page") int pageIndex);
 
+    @GET("movie/{movie_id}/similar")
+    Call<MovieResponse> getSimilarMovies(@Path("movie_id") int id,@Query("api_key") String api_key,@Query("page") int pageIndex);
+
+    @GET("movie/{movie_id}/images")
+    Call<ImageResponse> getImages(@Path("movie_id") int id,@Query("api_key") String api_key,@Query("language") String language);
+
 }

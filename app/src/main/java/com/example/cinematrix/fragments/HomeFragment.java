@@ -36,6 +36,7 @@ public class HomeFragment extends Fragment {
 
     public static final String BASE_URL = "https://api.themoviedb.org/3/";
     public int PAGE = 1;
+    public int SEARCH_PAGE = 1;
     public static String API_KEY = "99fd430c3be6ec05d080de47353ce38e";
     public static String LANGUAGE = "en-US";
     public static String CATEGORY = "popular";
@@ -64,7 +65,7 @@ public class HomeFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                queryString = query;
+//                queryString = query;
                 return false;
             }
 
@@ -75,6 +76,7 @@ public class HomeFragment extends Fragment {
                 if (newText.isEmpty()) {
                     initMovieList();
                 } else {
+
                     search(newText);
                 }
 
@@ -83,7 +85,7 @@ public class HomeFragment extends Fragment {
         });
 
 
-        if (movies.isEmpty() && queryString.isEmpty()) {
+        if (queryString.isEmpty()) {
             initMovieList();
         }
 
@@ -93,7 +95,7 @@ public class HomeFragment extends Fragment {
 
     private void initMovieList() {
 
-
+        SEARCH_PAGE = 1;
         Call<MovieResponse> call = apiInterface().getPopularMovies(API_KEY, PAGE);
 
 
@@ -128,8 +130,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void search(String searchString) {
+        PAGE = 1;
 
-        Call<MovieResponse> call = apiInterface().getSearch(API_KEY, searchString, 1);
+        Call<MovieResponse> call = apiInterface().getSearch(API_KEY, searchString, SEARCH_PAGE);
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -138,6 +141,10 @@ public class HomeFragment extends Fragment {
                     List<MovieResult> movieList = response.body().getMovieResults();
                     movies = new ArrayList<>();
                     movies.addAll(movieList);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    adapter = new TopMoviesAdapter(context, movies, getFragmentManager());
+                    adapter.setOnBottomReachedListener(position -> loadMoreSearch(searchString, ++SEARCH_PAGE));
+                    recyclerView.setAdapter(adapter);
 
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }
@@ -150,6 +157,27 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
+    }
+
+    private void loadMoreSearch(String searchString, int pageNumber) {
+        Call<MovieResponse> call = apiInterface().getSearch(API_KEY, searchString, pageNumber);
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<MovieResult> movieList = response.body().getMovieResults();
+                movies.addAll(movieList);
+
+                recyclerView.getAdapter().notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
 
     }
 
