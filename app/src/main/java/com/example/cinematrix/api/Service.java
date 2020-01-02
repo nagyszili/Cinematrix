@@ -26,6 +26,6 @@ public interface Service {
     Call<MovieResponse> getSimilarMovies(@Path("movie_id") int id,@Query("api_key") String api_key,@Query("page") int pageIndex);
 
     @GET("movie/{movie_id}/images")
-    Call<ImageResponse> getImages(@Path("movie_id") int id,@Query("api_key") String api_key,@Query("language") String language);
+    Call<ImageResponse> getImages(@Path("movie_id") Integer id,@Query("api_key") String api_key,@Query("language") String language);
 
 }

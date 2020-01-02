@@ -130,6 +130,9 @@ public class DetailDialogFragment extends DialogFragment {
         title.setText(movie.getTitle());
         description.setText(movie.getOverview());
 
+        getSimilarMovies();
+        getImageList();
+
 
         dbUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -166,8 +169,6 @@ public class DetailDialogFragment extends DialogFragment {
             }
         });
 
-        getSimilarMovies();
-        getImageList();
 
         youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
@@ -180,15 +181,7 @@ public class DetailDialogFragment extends DialogFragment {
         });
 
 
-//        playVideo(videoId, youtubePlayerView);
 
-//        youtubePlayerView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                String videoId = editTextId.getText().toString();
-//                playVideo(videoId, youtubePlayerView);
-//            }
-//        });
 
         return view;
     }
@@ -252,20 +245,21 @@ public class DetailDialogFragment extends DialogFragment {
                     List<Backdrop> backdrops = imageResponse.getBackdrops();
                     images = new ArrayList<>();
                     images.addAll(backdrops);
-                    imageAdapter = new ImageAdapter(context,images);
                     imageRV.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                    imageAdapter = new ImageAdapter(context,images);
                     imageRV.setAdapter(imageAdapter);
                     imageRV.getAdapter().notifyDataSetChanged();
 
 
                 } catch (Exception e) {
-//                    Toast.makeText(getContext(), "Something went wrong:" + e.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Something went wrong:" + e.toString(), Toast.LENGTH_LONG).show();
 
                 }
             }
 
             @Override
             public void onFailure(Call<ImageResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Something went wrong:", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -285,7 +279,6 @@ public class DetailDialogFragment extends DialogFragment {
                 MovieResponse responseBody = response.body();
                 try {
                     List<MovieResult> movieList = responseBody.getMovieResults();
-//                    Toast.makeText(getContext(), movieList.get(0).getTitle(), Toast.LENGTH_SHORT).show();
                     similarMovies = new ArrayList<>();
                     similarMovies.addAll(movieList);
                     similarRV.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));

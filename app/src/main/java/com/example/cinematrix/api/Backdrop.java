@@ -19,7 +19,7 @@ public class Backdrop {
     private String iso6391;
     @SerializedName("vote_average")
     @Expose
-    private Integer voteAverage;
+    private Double voteAverage;
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
@@ -59,11 +59,11 @@ public class Backdrop {
         this.iso6391 = iso6391;
     }
 
-    public Integer getVoteAverage() {
+    public Double getVoteAverage() {
         return voteAverage;
     }
 
-    public void setVoteAverage(Integer voteAverage) {
+    public void setVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
     }
 

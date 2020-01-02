@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.example.cinematrix.R;
 import com.example.cinematrix.api.Backdrop;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder>{
@@ -37,6 +37,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+//        Toast.makeText(context, images.get(0).getFilePath(), Toast.LENGTH_SHORT).show();
+
         Glide.with(holder.imageView)
                 .load(images.get(position).getFilePath())
                 .into(holder.imageView);
@@ -54,7 +57,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder>{
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            images = itemView.findViewById(R.id.detailmage);
+            imageView = itemView.findViewById(R.id.detailmageItem);
         }
     }
 }
